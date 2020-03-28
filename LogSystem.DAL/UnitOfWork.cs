@@ -1,13 +1,9 @@
 ﻿using LogSystem.DAL.Interfaces;
 using LogSystem.DAL.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogSystem.DAL
 {
@@ -19,6 +15,7 @@ namespace LogSystem.DAL
 
         #region private repositories fields
         private IUserRepository userRepository;
+        private IUserActionRepository userActionRepository;
         #endregion
 
         public UnitOfWork()
@@ -33,6 +30,10 @@ namespace LogSystem.DAL
         public IUserRepository UserRepository
         {
             get { return userRepository ?? (userRepository = new UserRepository(_transaction)); }
+        }
+        public IUserActionRepository UserActionRepository
+        {
+            get { return userActionRepository ?? (userActionRepository = new UserActionRepository(_transaction)); }
         }
         #endregion
 
@@ -61,9 +62,10 @@ namespace LogSystem.DAL
         private void ResetRepositories()
         {
             userRepository = null;
+            userActionRepository = null;
         }
 
-            public void Dispose()
+        public void Dispose()
         {
             dispose(true);
             GC.SuppressFinalize(this);
