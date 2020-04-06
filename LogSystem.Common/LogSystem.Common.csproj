@@ -43,6 +43,10 @@
   <ItemGroup>
     <Compile Include="Enums\UserActionType.cs" />
     <Compile Include="Enums\UserType.cs" />
+    <Compile Include="ErrorModel.cs" />
+    <Compile Include="Helpers\ByteArrayHelper.cs" />
+    <Compile Include="Helpers\ErrorHelper.cs" />
+    <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
