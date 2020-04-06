@@ -1,4 +1,5 @@
-﻿using LogSystem.Common.Enums;
+﻿using LogSystem.BLL.DTO.UserDTO;
+using LogSystem.Common.Enums;
 using System;
 
 namespace LogSystem.BLL.DTO.UserActionDTO

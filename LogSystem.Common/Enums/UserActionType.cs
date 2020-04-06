@@ -4,6 +4,7 @@
     {
         LogIn,
         LogOut,
+        SignUp,
         Edit
     }
 }
