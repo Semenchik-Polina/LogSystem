@@ -46,6 +46,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,8 +55,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DTO\UserActionDTO\UserActionCreateDTO.cs" />
+    <Compile Include="DTO\UserActionDTO\UserActionGetDetailDTO.cs" />
+    <Compile Include="DTO\UserDTO\UserCreateDTO.cs" />
+    <Compile Include="DTO\UserDTO\UserGetDetailDTO.cs" />
+    <Compile Include="DTO\UserDTO\UserLogInDTO.cs" />
+    <Compile Include="DTO\UserDTO\UserEditDTO.cs" />
+    <Compile Include="Interfaces\IUserActionService.cs" />
+    <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Interfaces\IValidationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\UserActionService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\ValidationService.cs" />
+    <Compile Include="StaticSalt.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StaticSalt.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\AMapper.cs" />
+    <Compile Include="Utils\AutoMapperProfiles\UserActionProfile.cs" />
+    <Compile Include="Utils\AutoMapperProfiles\UserProfile.cs" />
+    <Compile Include="Utils\UserCookieHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -69,6 +90,12 @@
       <Project>{1bf70990-5d4a-4c0d-9822-f29f95ed5ceb}</Project>
       <Name>LogSystem.DAL</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="StaticSalt.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StaticSalt.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
