@@ -8,7 +8,7 @@ namespace LogSystem.DAL.Interfaces
         //Task<IEnumerable<User>> GetAll();
         Task<User> GetById(int id);
         Task<User> GetByUserName(string username);
-        Task Insert(User entity);
+        Task<int> Insert(User entity);
         Task Update(User entity);
     }
 }

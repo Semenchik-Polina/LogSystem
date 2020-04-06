@@ -1,9 +1,4 @@
 ﻿using LogSystem.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogSystem.DAL.Entities
 {
@@ -16,6 +11,7 @@ namespace LogSystem.DAL.Entities
         public string HashedPassword { get; set; }
         public string Email { get; set; }
         public UserType Type { get; set; }
+        // store date as string because SQLite doesn't have DateTime type
         public string RegistrationDate { get; set; }
         public string DynamicSalt { get; set; }
     }

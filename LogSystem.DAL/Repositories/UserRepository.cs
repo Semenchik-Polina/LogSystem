@@ -3,17 +3,19 @@ using LogSystem.DAL.Entities;
 using LogSystem.DAL.Interfaces;
 using System;
 using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace LogSystem.DAL.Repositories
 {
-    internal class UserRepository : RepositoryBase, IUserRepository
+    public class UserRepository : RepositoryBase, IUserRepository
     {
-        public UserRepository(IDbTransaction transaction)
-            :base(transaction)
+        public UserRepository()
+            :base()
         { }
 
+        
         //public async Task<IEnumerable<User>> GetAll()
         //{
         //    var result = await Connection.QueryAsync<User>(
@@ -25,48 +27,58 @@ namespace LogSystem.DAL.Repositories
 
         public async Task<User> GetById(int id)
         {
-            var user = await Connection.QueryAsync<User>(
-                "SELECT * FROM USER WHERE UserID = @userID",
-                param: new { userID = id },
-                transaction: Transaction
-            );
-            var result = user.FirstOrDefault();
-            return result;
+            using (IDbConnection connection = new SQLiteConnection(connectionString))
+            {
+                var user = await connection.QueryAsync<User>(
+                    "SELECT * FROM USER WHERE UserID = @userID",
+                    param: new { userID = id }
+                    //transaction: Transaction
+                );
+                var result = user.FirstOrDefault();
+                return result;
+            }
         }
 
         public async Task<User> GetByUserName(string username)
         {
-            var result = await Connection.QueryAsync<User>(
+            using (IDbConnection Connection = new SQLiteConnection(connectionString))
+            {
+                var result = await Connection.QueryAsync<User>(
                 "SELECT * FROM USER WHERE UserName = @username",
-                param: new { username },
-                transaction: Transaction
+                param: new { username }
+                //transaction: Transaction
             );
-            return result.FirstOrDefault();
+                return result.FirstOrDefault();
+            }
         }
 
-        public async Task Insert(User entity)
+        public async Task<int> Insert(User entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("Entity user is null");
             }
-            entity.UserID = await Connection.ExecuteScalarAsync<int>(
+            using (IDbConnection Connection = new SQLiteConnection(connectionString))
+            {
+                entity.UserID = await Connection.ExecuteScalarAsync<int>(
                 "INSERT INTO User (firstName, lastName, email, hashedPassword, type, username,  dynamicSalt, registrationDate) " +
                 "VALUES (@firstName, @lastName, @email, @hashedPassword, @type, @username, @dynamicSalt, @registrationDate); " +
-                "SELECT  SCOPE_IDENTITY()",
+                "SELECT seq FROM sqlite_sequence WHERE name = User ",
                 param: new
                 {
                     firstName = entity.FirstName,
                     lastName = entity.LastName,
                     email = entity.Email,
                     hashedPassword = entity.HashedPassword,
-                    type = entity.Type,
+                    type = (int) entity.Type,
                     username = entity.UserName,
                     dynamicSalt = entity.DynamicSalt,
                     registrationDate = entity.RegistrationDate
-                },
-                transaction: Transaction
+                }
+                //transaction: Transaction
             );
+            }
+            return entity.UserID;
         }
 
         public async Task Update(User entity)
@@ -75,9 +87,11 @@ namespace LogSystem.DAL.Repositories
             {
                 throw new ArgumentNullException("Entity user is null");
             }
-            await Connection.ExecuteAsync(
+            using (IDbConnection Connection = new SQLiteConnection(connectionString))
+            {
+                await Connection.ExecuteAsync(
                 "UPDATE User SET firstName = @firstName, lastName = @lastName, email = @email, hashedPassword = @hashedPassword, " +
-                "type = @type, username = @username, dynamicSalt = @dynamicSalt, registrationDate = @registrationDate " +
+                "type = @type " +
                 "WHERE userID = @id",
                 param: new
                 {
@@ -85,14 +99,12 @@ namespace LogSystem.DAL.Repositories
                     lastName = entity.LastName,
                     email = entity.Email,
                     hashedPassword = entity.HashedPassword,
-                    type = entity.Type,
-                    username = entity.UserName,
-                    dynamicSalt = entity.DynamicSalt,
-                    registrationDate = entity.RegistrationDate,
+                    type = (int) entity.Type,
                     id = entity.UserID
-                },
-                transaction: Transaction
+                }
+                //transaction: Transaction
             );
+            }
         }
     }
 }
