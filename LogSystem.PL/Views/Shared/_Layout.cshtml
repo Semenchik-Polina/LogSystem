@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using LogSystem.Common.Enums
+@using LogSystem.BLL.Utils
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -20,9 +23,32 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                   
+                    @if (Request.Cookies[UserCookieHelper.userCookieName] != null &&
+                        Request.Cookies[UserCookieHelper.userCookieName]["UserType"] == UserType.Admin.ToString())
+                    {
+
+                        <li class="dropdown">
+                            @Html.ActionLink("User's actions", "GetAll", "UserAction")
+                        </li>
+                    }
+
+                    @if (User.Identity.IsAuthenticated && Request.Cookies[UserCookieHelper.userCookieName] != null)
+                    {
+                        <li class="dropdown">
+                            @Html.ActionLink("Profile", "GetUserProfile", "Main")
+                        </li>
+
+                        <li class="dropdown">
+                            @Html.ActionLink("Log out", "SignOut", "Main")
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="dropdown">
+                            @Html.ActionLink("Log in", "LogIn", "LogIn")
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
