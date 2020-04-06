@@ -5,14 +5,15 @@ using LogSystem.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Threading.Tasks;
 
 namespace LogSystem.DAL.Repositories
 {
-    internal class UserActionRepository: RepositoryBase, IUserActionRepository
+    public class UserActionRepository: RepositoryBase, IUserActionRepository
     {
-        public UserActionRepository(IDbTransaction transaction)
-            : base(transaction)
+        public UserActionRepository()
+            : base()
         { }
 
         /// <summary>
@@ -21,11 +22,22 @@ namespace LogSystem.DAL.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<UserAction>> GetAll()
         {
-            var result = await Connection.QueryAsync<UserAction>(
-                "SELECT * FROM UserAction",
-                transaction: Transaction
+            using (IDbConnection connection = new SQLiteConnection(connectionString))
+            {
+                var userActions = await connection.QueryAsync<UserAction, User, UserAction>(
+                "SELECT * FROM UserAction ua " +
+                "LEFT JOIN User u " +
+                "ON ua.FK_UserID = u.UserID ",
+                (userAction, user) =>
+                {
+                    userAction.User = user;
+                    return userAction;
+                },
+                buffered: true,
+                splitOn: "FK_UserID"
                 );
-            return result;
+                return userActions;
+            }
         }
 
         //public async Task<UserAction> GetById(int id)
@@ -46,13 +58,24 @@ namespace LogSystem.DAL.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<UserAction>> GetByDate(DateTime date)
         {
-            var result = await Connection.QueryAsync<UserAction>(
-                "SELECT * FROM UserAction WHERE Date = @date",
-                // store date as string because SQLite doesn't have DateTime type
-                param: new { date = date.ToString() },
-                transaction: Transaction
-            );
-            return result;
+            using (IDbConnection connection = new SQLiteConnection(connectionString))
+            {
+                var result = await connection.QueryAsync<UserAction, User, UserAction>(
+                "SELECT * FROM UserAction ua " +
+                "LEFT JOIN User u " +
+                "ON ua.FK_UserID = u.UserID " +
+                "WHERE ua.Date = @date",
+                 (userAction, user) =>
+                 {
+                     userAction.User = user;
+                     return userAction;
+                 },
+                param: new { date },
+                buffered: true,
+                splitOn: "FK_UserID"
+                );
+                return result;
+            }
         }
 
         /// <summary>
@@ -62,12 +85,24 @@ namespace LogSystem.DAL.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<UserAction>> GetByType(UserActionType type)
         {
-            var result = await Connection.QueryAsync<UserAction>(
-                "SELECT * FROM UserAction WHERE Type = @type",
-                param: new { type = (int)type },
-                transaction: Transaction
-            );
-            return result;
+            using (IDbConnection connection = new SQLiteConnection(connectionString))
+            {
+                var result = await connection.QueryAsync<UserAction, User, UserAction>(
+                "SELECT * FROM UserAction ua " +
+                "LEFT JOIN User u " +
+                "ON ua.FK_UserID = u.UserID " +
+                "WHERE ua.Type = @type",
+                 (userAction, user) =>
+                 {
+                     userAction.User = user;
+                     return userAction;
+                 }, 
+                param: new { type = (int) type },
+                buffered: true,
+                splitOn: "FK_UserID"
+                );
+                return result;
+            }
         }
 
         /// <summary>
@@ -75,14 +110,26 @@ namespace LogSystem.DAL.Repositories
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<UserAction>> GetByUserID(int userID)
+        public async Task<IEnumerable<UserAction>> GetByUserID(int FK_UserID)
         {
-            var result = await Connection.QueryAsync<UserAction>(
-                "SELECT * FROM UserAction WHERE UserID = @userID",
-                param: new { userID },
-                transaction: Transaction
+            using (IDbConnection connection = new SQLiteConnection(connectionString))
+            {
+                var result = await connection.QueryAsync<UserAction, User, UserAction>(
+                "SELECT * FROM UserAction ua" +
+                "LEFT JOIN User u " +
+                "ON ua.FK_UserID = u.UserID " +
+                "WHERE ua.FK_UserID = @FK_UserID",
+                (userAction, user) =>
+                {
+                    userAction.User = user;
+                    return userAction;
+                },
+                param: new { FK_UserID },
+                buffered: true,
+                splitOn: "FK_UserID"
             );
-            return result;
+                return result;
+            }
         }
 
         public async Task Insert(UserAction entity)
@@ -91,18 +138,20 @@ namespace LogSystem.DAL.Repositories
             {
                 throw new ArgumentNullException("Entity user is null");
             }
-            entity.UserActionID = await Connection.ExecuteScalarAsync<int>(
-                "INSERT INTO UserAction (userID, date, type) " +
-                "VALUES (@userID, @date, @type); " +
-                "SELECT  SCOPE_IDENTITY()",
+            using (IDbConnection connection = new SQLiteConnection(connectionString))
+            {
+
+                await connection.ExecuteAsync(
+                "INSERT INTO UserAction (FK_UserID, Date, Type) " +
+                "VALUES (@FK_UserID, @Date, @type) ",
                 param: new
                 {
-                    userID = entity.UserID,
-                    date = entity.Date,
-                    type = entity.Type
-                },
-                transaction: Transaction
+                    entity.FK_UserID,
+                    entity.Date,
+                    type = (int) entity.Type
+                }
             );
+            }
         }
 
         //public async Task Update(UserAction entity)
