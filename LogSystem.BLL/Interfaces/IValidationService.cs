@@ -8,7 +8,7 @@ namespace LogSystem.BLL.Interfaces
     {
         Task<ErrorModel> ValidateLogInUser(string username, string password);
         Task<ErrorModel> ValidateSignUpUser(UserCreateDTO user);
-        Task<bool> IsUserNameAvailable(string username);
+        Task<bool> IsUserNameTaken(string username);
         Task<ErrorModel> IsAccountExists(string username, string password);
     }
 }

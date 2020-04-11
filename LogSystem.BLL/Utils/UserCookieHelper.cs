@@ -35,7 +35,7 @@ namespace LogSystem.BLL.Utils
             return cookie;
         }
 
-        public static HttpCookie UpdateUserCookie(HttpCookie httpCookie, UserEditDTO user)
+        public static HttpCookie UpdateUserCookie(HttpCookie httpCookie, UserUpdateDTO user)
         {
             DeleteUserCookie(httpCookie);
             var cookie = CreateCookie(user.UserID, user.Type);

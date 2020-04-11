@@ -63,7 +63,7 @@ namespace LogSystem.DAL.Repositories
                 entity.UserID = await Connection.ExecuteScalarAsync<int>(
                 "INSERT INTO User (firstName, lastName, email, hashedPassword, type, username,  dynamicSalt, registrationDate) " +
                 "VALUES (@firstName, @lastName, @email, @hashedPassword, @type, @username, @dynamicSalt, @registrationDate); " +
-                "SELECT seq FROM sqlite_sequence WHERE name = User ",
+                "SELECT last_insert_rowid(); ",
                 param: new
                 {
                     firstName = entity.FirstName,

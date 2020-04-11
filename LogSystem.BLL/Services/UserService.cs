@@ -54,7 +54,7 @@ namespace LogSystem.BLL.Services
             return userGetDetailDTO;
         }
         
-        public async Task SignUp(UserCreateDTO user)
+        public async Task<int> SignUp(UserCreateDTO user)
         {
             string dynamicSalt = HashHelper.GetDynamicSalt(user.UserName);
             string hashedPassword = HashHelper.GetPasswordHash(user.Password, dynamicSalt);
@@ -71,13 +71,14 @@ namespace LogSystem.BLL.Services
             var userAction = new UserActionCreateDTO(newUserID, UserActionType.SignUp);
             await UserActionService.InsertUserActionToDB(userAction);
 
+            return newUserID;
             //    Database.Commit();
         }
 
-        public async Task EditUser(UserEditDTO user)
+        public async Task UpdateUser(UserUpdateDTO user)
         {
             // Map, add fields to customer entity
-            User userEntity = AMapper.Mapper.Map<UserEditDTO, User>(user);
+            User userEntity = AMapper.Mapper.Map<UserUpdateDTO, User>(user);
 
             var outdatedUser = await UserRepository.GetById(user.UserID);
             

@@ -18,7 +18,7 @@ namespace LogSystem.BLL.Utils.AutoMapperProfiles
             CreateMap<User, UserGetDetailDTO>().ReverseMap()
                 .ForMember("RegistrationDate", opt => opt.MapFrom(c => c.RegistrationDate.ToString(dateTimeFormat)));
 
-            CreateMap<UserEditDTO, User>();
+            CreateMap<UserUpdateDTO, User>();
 
             CreateMap<UserCreateDTO, User>();
         }

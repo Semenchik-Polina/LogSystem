@@ -30,21 +30,21 @@ namespace LogSystem.BLL.Services
         public async Task<ErrorModel> ValidateSignUpUser(UserCreateDTO user)
         {
             ErrorModel error = null;
-            if (!(await IsUserNameAvailable(user.UserName)))
+            if (!(await IsUserNameTaken(user.UserName)))
             {
                 error = ErrorHelper.UserNameIsTaken;
             }            
             return error;
         }
 
-        public async Task<bool> IsUserNameAvailable(string username)
+        public async Task<bool> IsUserNameTaken(string username)
         {
             UserGetDetailDTO userGetDetailDTO = await UserService.GetUserByUserName(username);
             if (userGetDetailDTO != null)
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         public async Task<ErrorModel> IsAccountExists(string username, string password)

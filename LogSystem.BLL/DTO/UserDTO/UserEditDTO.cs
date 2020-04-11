@@ -2,7 +2,7 @@
 
 namespace LogSystem.BLL.DTO.UserDTO
 {
-    public class UserEditDTO
+    public class UserUpdateDTO
     {
         public int UserID { get; set; }
         public string FirstName { get; set; }
