@@ -1,48 +1,8 @@
-﻿@model LogSystem.PL.Models.UserViewModels.AuthorizationViewModel
-
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>LogIn</h2>
-
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Log in" class="btn btn-default" formaction="/LogIn/LogIn" formmethod="post"/>
-            </div>
-        </div>
-    </div>
-}
-
-    <div>
-        <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink("Registration", "SignUp", "SignUp", "", new { @class = "btn btn-default" })
-        </div>
-    </div>
+<app-root>Loading...</app-root>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -5,6 +5,7 @@ using LogSystem.PL.Utils;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Net;
 
 namespace LogSystem.PL.Controllers
 {
@@ -31,10 +32,12 @@ namespace LogSystem.PL.Controllers
         [HttpPost]
         public async Task<ActionResult> SignUp(RegistrationViewModel regVM)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
+            // remove ???
+            //if (!ModelState.IsValid)
+            //{
+            //    return Json(null, JsonRequestBehavior.AllowGet);
+            //    //return View();
+            //}
 
             UserCreateDTO userCreateDTO = AMapper.Mapper.Map<RegistrationViewModel, UserCreateDTO>(regVM);
             //var error = await ValidationService.ValidateSignUpUser(userCreateDTO);
@@ -48,15 +51,20 @@ namespace LogSystem.PL.Controllers
             //    return View();
             //}
 
-            await UserService.SignUp(userCreateDTO);
-  
-            return RedirectToAction("LogIn", "LogIn");
+            int newUserId = await UserService.SignUp(userCreateDTO);
+
+            // TODO: return added user
+            return Json(newUserId, JsonRequestBehavior.AllowGet);
+
+            //return new HttpStatusCodeResult(HttpStatusCode.Created);
+
+            //return RedirectToAction("LogIn", "LogIn");
         }
 
         [HttpPost]
-        public async Task<JsonResult> IsUserNameAvailable(string UserName)
+        public async Task<ActionResult> IsUserNameTaken(string UserName)
         {
-            bool result = await ValidationService.IsUserNameAvailable(UserName);
+            bool result = await ValidationService.IsUserNameTaken(UserName);
             return Json(result);
         }
 

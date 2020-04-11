@@ -25,6 +25,19 @@ namespace LogSystem.PL
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+            
+            // Angular bundles
+            bundles.Add(new ScriptBundle("~/bundles/Angular")
+              .Include(
+                "~/Angular/dist/Angular/inline.*",
+                "~/Angular/dist/Angular/polyfills.*",
+                "~/Angular/dist/Angular/scripts.*",
+                "~/Angular/dist/Angular/vendor.*",
+                "~/Angular/dist/Angular/runtime.*",
+                "~/Angular/dist/Angular/main.*"));
+
+            bundles.Add(new StyleBundle("~/Content/Angular")
+              .Include("~/Angular/dist/Angular/styles.*"));
         }
     }
 }

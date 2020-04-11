@@ -8,13 +8,13 @@ namespace LogSystem.PL.Utils.AutoMapperProfiles
     {
         public UserProfile()
         {
-            CreateMap<UserGetDetailDTO, UserEditorViewModel>();
+            CreateMap<UserGetDetailDTO, UserEditViewModel>();
             
             CreateMap<AuthorizationViewModel, UserLogInDTO>();
 
             CreateMap<RegistrationViewModel, UserCreateDTO>();
 
-            CreateMap<UserEditorViewModel, UserEditDTO>();
+            CreateMap<UserEditViewModel, UserUpdateDTO>();
         }
     }
 }

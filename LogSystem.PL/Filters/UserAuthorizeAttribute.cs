@@ -16,6 +16,7 @@ namespace LogSystem.PL.Filters
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
+
             if (AuthorizeCore(filterContext.HttpContext))
             {
                 base.OnAuthorization(filterContext);
@@ -36,8 +37,8 @@ namespace LogSystem.PL.Filters
                     allowedTypes[i] = allowedTypes[i].Trim();
                 }
             }
-            var str = httpContext.Request.Cookies[UserCookieHelper.userCookieName]["UserID"];
-            return httpContext.Request.IsAuthenticated && Type(httpContext) && str != null;
+            var userCookie = httpContext.Request.Cookies[UserCookieHelper.userCookieName];
+            return httpContext.Request.IsAuthenticated && Type(httpContext) && userCookie != null;
         }
 
         private bool Type(HttpContextBase httpContext)

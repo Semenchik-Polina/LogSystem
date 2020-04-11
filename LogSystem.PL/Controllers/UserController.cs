@@ -4,12 +4,9 @@ using LogSystem.PL.Models.UserViewModels;
 using LogSystem.PL.Utils;
 using LogSystem.PL.Filters;
 using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using LogSystem.Common.Helpers;
+using System.Web.Script.Serialization;
 
 namespace LogSystem.PL.Controllers
 {
@@ -27,93 +24,52 @@ namespace LogSystem.PL.Controllers
             AMapper = new AMapper();
         }
 
-        // GET: User
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: User/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: User/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: User/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: User/Edit/5
-        public async Task<ActionResult> Edit(int id)
+        // GET: User/Get/5
+        [HttpGet]
+        public async Task<ActionResult> Get(int id)
         {
             var userGetDetailDTO = await UserService.GetUserByID(id);
             if (userGetDetailDTO == null)
             {
                 return RedirectToAction("LogIn", "LogIn");
             }
-            var userVM = AMapper.Mapper.Map<UserGetDetailDTO, UserEditorViewModel>(userGetDetailDTO);
+            var userVM = AMapper.Mapper.Map<UserGetDetailDTO, UserEditViewModel>(userGetDetailDTO);
+            return Json(userVM, JsonRequestBehavior.AllowGet);
+        }
 
-            return View(userVM);
+        // GET: User/Edit/5
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            //var userGetDetailDTO = await UserService.GetUserByID(id);
+            //if (userGetDetailDTO == null)
+            //{
+            //    return RedirectToAction("LogIn", "LogIn");
+            //}
+            //var userVM = AMapper.Mapper.Map<UserGetDetailDTO, UserEditViewModel>(userGetDetailDTO);
+            return View();
         }
 
         // POST: User/Edit/5
         [HttpPost]
-        public async Task<ActionResult> Edit(int UserID, UserEditorViewModel user)
+        public async Task<ActionResult> Edit(int UserID, UserEditViewModel user)
         {
             try
             {
-                UserEditDTO userUpdateDTO = AMapper.Mapper.Map<UserEditorViewModel, UserEditDTO>(user);
-                await UserService.EditUser(userUpdateDTO);
+                UserUpdateDTO userUpdateDTO = AMapper.Mapper.Map<UserEditViewModel, UserUpdateDTO>(user);
+                await UserService.UpdateUser(userUpdateDTO);
 
                 var updatedUserCookie = BLL.Utils.UserCookieHelper.UpdateUserCookie(Response.Cookies[BLL.Utils.UserCookieHelper.userCookieName], userUpdateDTO);
 
                 Response.Cookies.Add(updatedUserCookie);
 
-                return RedirectToAction("Edit", new { id = UserID });
+                return Json(UserID, JsonRequestBehavior.AllowGet);
+
+                //return RedirectToAction("Edit", new { id = UserID });
             }
             catch
             {
-                return View();
-            }
-        }
-
-        // GET: User/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: User/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
     }

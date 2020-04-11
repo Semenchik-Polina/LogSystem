@@ -1,10 +1,8 @@
-﻿@model IEnumerable<LogSystem.PL.Models.UserActionViewModel>
-
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>UserActionListView</h2>
+@*<h2>UserActionListView</h2>
 
 <table class="table">
     <tr>
@@ -20,18 +18,23 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Type)
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+                @Html.TextBoxFor(modelItem => item.Date,
+               new { @Value = item.Date.ToString("yyyy/MM/dd"), @class="datepicker" })
+                @Html.EditorFor(m => item.Date, new { htmlAttributes = new { @class = "datepicker" } })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+        </tr>
+    }
+</table>*@
 
-</table>
+<app-root>Loading...</app-root>

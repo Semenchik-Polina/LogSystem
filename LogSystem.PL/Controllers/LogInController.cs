@@ -3,8 +3,10 @@ using LogSystem.BLL.Interfaces;
 using LogSystem.BLL.Utils;
 using LogSystem.Common.Helpers;
 using LogSystem.PL.Models.UserViewModels;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using System.Web.Security;
 
 namespace LogSystem.PL.Controllers
@@ -33,10 +35,9 @@ namespace LogSystem.PL.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> LogIn(AuthorizationViewModel authVM)
         {
-            var error = await ValidationService.ValidateLogInUser(authVM.Username, authVM.Password);
+            var error = await ValidationService.ValidateLogInUser(authVM.UserName, authVM.Password);
 
             if (error != null)
             {
@@ -45,7 +46,8 @@ namespace LogSystem.PL.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return Json(null, JsonRequestBehavior.AllowGet);
+                //return View("Get");
             }
 
             UserLogInDTO userLogInDTO = AMapper.Mapper.Map<AuthorizationViewModel, UserLogInDTO>(authVM);
@@ -53,9 +55,10 @@ namespace LogSystem.PL.Controllers
 
             FormsAuthentication.SetAuthCookie(userGetDTO.UserName, true);
             Response.Cookies.Add(UserCookieHelper.CreateUserCookie(userGetDTO));
-            
-            // change to real action name 
-            return RedirectToAction("Edit", "User", new { id = userGetDTO.UserID});
+
+            return Json(userGetDTO, JsonRequestBehavior.AllowGet);
+
+            //return RedirectToAction("Edit", "User", new { id = userGetDTO.UserID});
         }
 
     }
