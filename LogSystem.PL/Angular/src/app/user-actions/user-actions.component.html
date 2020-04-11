@@ -1,0 +1,84 @@
+<div class="container">
+  <h2>Actions</h2>
+
+  <form (ngSubmit)="filter()" #filterForm="ngForm">
+    <div class="form-group">
+      <label for="filterBy">Filter by</label>
+      <select class="form-control" id="filterBy" required name="filterBy"
+              [(ngModel)]="model.filterBy">
+        <option *ngFor="let filtBy of filterByOptions" [value]="filtBy">{{filtBy}}</option>
+      </select>
+    </div>
+
+    <div *ngIf="model.filterBy == 'UserName' ">
+      <div class="form-group">
+        <input type="text" class="form-control" id="userName"
+               name="userName" [(ngModel)]="model.userName" placeholder="username">
+      </div>
+    </div>
+
+    <div *ngIf="model.filterBy == 'Type' ">
+      <div class="form-group">
+        <select class="form-control" id="type" name="type" [(ngModel)]="model.type">
+          <option *ngFor="let type of typeOptions" [value]="typeOptions.indexOf(type)">
+            {{type}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="model.filterBy == 'Date' ">
+      <div class="form-group">
+        <div>Date picker</div>
+        <div date-picker>
+          <dp-date-picker class="form-control" id="date" name="date" placeholder="Date" returnedValueType="string"
+                          [(ngModel)]="model.date" [config]="datePickerConfig" theme="dp-material"></dp-date-picker>
+          <p>{{date}}</p>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="!filterForm.form.valid" (click)="filter()">
+      <fa name="search" aria-hidden="true"></fa>
+    </button>
+
+    <button type="button" (click)="clearFilter()">
+      <fa name="filter" aria-hidden="true"></fa>
+    </button>
+
+  </form>
+
+
+  <table *ngIf="filteredUserActions" class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">
+          UserName
+          <button type="button" (click)="sortBy = 'UserName'">
+            <fa name="sort-down" aria-hidden="true"></fa>
+          </button>
+        </th>
+        <th scope="col">
+          Type
+          <button type="button" (click)="sortBy = 'Type'">
+            <fa name="sort-down" aria-hidden="true"></fa>
+          </button>
+        </th>
+        <th scope="col">
+          Date
+          <button type="button" (click)="sortBy = 'Date'">
+            <fa name="sort-down" aria-hidden="true"></fa>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let userAction of filteredUserActions | sortBy: sortBy ">
+        <td>{{userAction.UserName}}</td>
+        <td>{{typeOptions[userAction.Type]}}</td>
+        <td>{{userAction.Date | date }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

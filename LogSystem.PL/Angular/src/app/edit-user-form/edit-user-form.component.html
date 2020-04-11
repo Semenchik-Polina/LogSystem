@@ -1,0 +1,82 @@
+<form *ngIf="user" [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
+
+  <label>User name: </label>
+  <p>{{userName.value}}</p>
+  
+
+  <label for="firstName">First name: </label>
+  <input id="firstName" type="text" formControlName="firstName" class="form-control">
+
+  <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
+    <div *ngIf="firstName.errors.pattern">
+      Inalid first name.
+    </div>
+  </div>
+
+
+  <label for="lastName">Last name: </label>
+  <input id="lastName" type="text" formControlName="lastName" class="form-control">
+
+  <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
+    <div *ngIf="lastName.errors.pattern">
+      Inalid last name.
+    </div>
+  </div>
+
+
+  <label for="password">Password: </label>
+  <input id="password" type="password" formControlName="password" class="form-control">
+
+  <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
+    <div *ngIf="password.errors.required">
+      Password is required.
+    </div>
+    <div *ngIf="password.errors.pattern">
+      Password should contain minimum 6 characters, at least 1 letter and 1 number.
+    </div>
+  </div>
+
+
+  <label for="confirmPassword">Confirm password: </label>
+  <input id="confirmPassword" type="password" formControlName="confirmPassword" class="form-control">
+
+  <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="alert alert-danger">
+    <div *ngIf="confirmPassword.errors.required">
+      Confirm your password.
+    </div>
+  </div>
+
+  <div *ngIf="editUserForm.errors?.noPasswordConfirm && (confirmPassword.touched || confirmPassword.dirty)" class="alert alert-danger">
+    The value should be equal to password.
+  </div>
+
+
+  <label for="email">Email: </label>
+  <input id="email" type="text" formControlName="email" class="form-control">
+
+  <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+    <div *ngIf="email.errors.required">
+      Email is required.
+    </div>
+    <div *ngIf="email.errors.pattern">
+      Inalid email.
+    </div>
+  </div>
+
+
+  <div>
+    <input id="user" type="radio" value="0" name="type" formControlName="type">
+    <label for="user">User</label>
+  </div>
+  <div>
+    <input id="admin" type="radio" value="1" name="type" formControlName="type">
+    <label for="admin">Admin</label>
+  </div>
+
+  <label>Date of registration: </label>
+  <p>{{registrationDate.value | date}}</p>
+
+  <button class="btn btn-primary" type="submit" [disabled]="!editUserForm.valid">Save</button>
+
+</form>
+
