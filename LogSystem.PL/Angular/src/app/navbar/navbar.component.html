@@ -1,0 +1,30 @@
+<!--<nav>
+  <a *ngIf="!curUserID" routerLink="LogIn/LogIn" routerLinkActive="active">Log in</a>
+  <a *ngIf="!curUserID" routerLink="SignUp/SignUp" routerLinkActive="active">Sign up</a>
+  <a *ngIf="curUserID" [routerLink]="['/User/Edit/',curUserID]" routerLinkActive="active">Profile</a>
+  <a *ngIf="curUserID && curUserType=='Admin'" routerLink="UserAction/GetAll" routerLinkActive="active">User actions</a>
+</nav>-->
+
+
+<nav class="navbar navbar-expand-lg navbar-light py-md-2">
+  <span class="navbar-brand mb-0 h1">Log system</span>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="LogIn/LogIn" routerLinkActive="active">Log in</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="SignUp/SignUp" routerLinkActive="active">Sign up</a>
+      </li>
+      <li  class="nav-item">
+        <a class="nav-link" [routerLink]="['/User/Edit/',curUserID]" routerLinkActive="active">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="UserAction/GetAll" routerLinkActive="active">User actions</a>
+      </li>
+    </ul>
+  </div>
+</nav>

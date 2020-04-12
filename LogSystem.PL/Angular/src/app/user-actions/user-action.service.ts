@@ -18,13 +18,13 @@ const httpOptions = {
 
 export class UserActionService {
 
-  private baseUrl = "UserAction/";
+  private baseUrl = "api/UserAction1";
 
   constructor( private http: HttpClient ) { }
 
   getUserActions(): Observable<UserAction[]> {
-    const getUrl = `${this.baseUrl}Get`;
-    return this.http.get<UserAction[]>(getUrl, httpOptions);
+    //const getUrl = `${this.baseUrl}Get`;
+    return this.http.get<UserAction[]>(this.baseUrl, httpOptions);
   }
 
 }

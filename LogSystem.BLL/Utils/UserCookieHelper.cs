@@ -14,7 +14,7 @@ namespace LogSystem.BLL.Utils
         {
             HttpCookie cookie = new HttpCookie("Authorization");
 
-            string encoded = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(user.Email + ":" + user.HashedPassword));
+            string encoded = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(user.UserName + ":" + user.HashedPassword));
             cookie.Value = "Basic " + encoded;
 
             return cookie;

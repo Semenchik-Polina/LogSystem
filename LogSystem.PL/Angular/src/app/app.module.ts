@@ -1,13 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 import { AngularFontAwesomeModule} from 'angular-font-awesome';
 import bootstrap from "bootstrap";
 import { DpDatePickerModule } from 'ng2-date-picker';
+import { CookieService } from 'ngx-cookie-service';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EditUserFormComponent } from './edit-user-form/edit-user-form.component';
 import { LogInFormComponent } from './log-in-form/log-in-form.component';
@@ -22,13 +22,18 @@ import { SignUpService } from './sign-up-form/sign-up.service';
 import { UserActionService } from './user-actions/user-action.service';
 import { SortByPipe } from './user-actions/pipes/sort-by.pipe';
 import { FilterPipe } from './user-actions/pipes/filter.pipe';
+//import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
+import { HttpErrorInterceptor } from './shared/http-error.interceptor';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 export const appRoutes: Routes = [
   { path: 'LogIn/LogIn', component: LogInFormComponent, runGuardsAndResolvers: 'always' },
   { path: 'SignUp/SignUp', component: SignUpFormComponent },
   { path: 'User/Edit/:id', component: EditUserFormComponent, runGuardsAndResolvers: 'always' },
   { path: 'UserAction/GetAll', component: UserActionsComponent, runGuardsAndResolvers: 'always' },
-  { path: '**', redirectTo:'/' }
+  { path: '', redirectTo: 'LogIn/LogIn', pathMatch: 'full' },
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -41,11 +46,13 @@ export const appRoutes: Routes = [
     UserActionsComponent,
     SortByPipe,
     FilterPipe,
+    PageNotFoundComponent,
+    NavbarComponent,
+    //ErrorDialogComponent,
     //UniqueUserNameValidator
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
@@ -55,10 +62,12 @@ export const appRoutes: Routes = [
   ],
   exports: [RouterModule],
   providers: [
+    CookieService,
     LogInService,
     UserService,
     SignUpService,
-    UserActionService
+    UserActionService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
