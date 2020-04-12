@@ -6,6 +6,7 @@ import { UserService } from '../user.service';
 import { User } from '../shared/user';
 import { log } from 'util';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { DISABLED } from '@angular/forms/src/model';
 
 @Component({
   selector: 'edit-user-form',
@@ -16,9 +17,9 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 export class EditUserFormComponent implements OnInit {
 
   id: number;
-  user: User;
-  editUserForm: FormGroup;
-  
+  private user: User;
+  private editUserForm: FormGroup;
+   typeList = ["User", "Admin"];
   private routeSubscription: Subscription;
 
   constructor(
@@ -30,7 +31,9 @@ export class EditUserFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    if (!this.id) {
+      this.router.navigate(['/LogIn/LogIn']);
+    }
     this._userService.getUser(this.id)
       .subscribe((user: User) => {
         this.user = user;
@@ -52,14 +55,14 @@ export class EditUserFormComponent implements OnInit {
   initForm() {
     this.editUserForm = new FormGroup({
       'userID': new FormControl(this.user.UserID),
-      'userName': new FormControl(this.user.UserName),
+      'userName': new FormControl({ value: this.user.UserName, disabled : true }),
       'firstName': new FormControl(this.user.FirstName, Validators.pattern("^[A-Za-z,.'-]+$")),
       'lastName': new FormControl(this.user.LastName, Validators.pattern("^[A-Za-z,.'-]+$")),
       'password': new FormControl('',Validators.pattern("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")),
       'confirmPassword': new FormControl(''),
       'email': new FormControl(this.user.Email, Validators.pattern(".+@.+\\..+")),
       'type': new FormControl(this.user.Type),
-      'registrationDate': new FormControl(this.user.RegistrationDate)
+      'registrationDate': new FormControl({value: this.user.RegistrationDate, disabled : true })
     }, confirmPasswordValidator);
   }
 

@@ -1,88 +1,123 @@
+<h2 class="text-primary">Sign up</h2>
+
 <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
 
-  <label for="userName">User name: </label>
-  <input id="userName" type="text" formControlName="userName" class="form-control">
+  <div class="form-group row">
+    <label for="userName" class="col-sm-2 col-form-label">User name: </label>
+    <div class="col-sm-10">
+      <input id="userName" type="text" formControlName="userName" class="form-control" placeholder="User name">
 
-  <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="alert alert-danger">
-    <div *ngIf="userName.errors.required">
-      User name is required.
-    </div>
+      <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="alert alert-danger alert-validation">
+        <div *ngIf="userName.errors.required">
+          User name is required.
+        </div>
 
-    <div *ngIf="userName.errors?.userNameIsTaken">
-      User name is already taken.
-    </div>
-  </div>
+        <div *ngIf="userName.errors?.userNameIsTaken">
+          User name is already taken.
+        </div>
+      </div>
 
-
-  <label for="firstName">First name: </label>
-  <input id="firstName" type="text" formControlName="firstName" class="form-control">
-
-  <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
-    <div *ngIf="firstName.errors.pattern">
-      Inalid first name.
     </div>
   </div>
 
+  <div class="form-group row">
+    <label for="firstName" class="col-sm-2 col-form-label">First name: </label>
+    <div class="col-sm-10">
+      <input id="firstName" type="text" formControlName="firstName" class="form-control" placeholder="First name">
 
-  <label for="lastName">Last name: </label>
-  <input id="lastName" type="text" formControlName="lastName" class="form-control">
+      <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger alert-validation">
+        <div *ngIf="firstName.errors.pattern">
+          Inalid first name.
+        </div>
+      </div>
 
-  <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
-    <div *ngIf="lastName.errors.pattern">
-      Inalid last name.
     </div>
   </div>
 
+  <div class="form-group row">
+    <label for="lastName" class="col-sm-2 col-form-label">Last name: </label>
+    <div class="col-sm-10">
+      <input id="lastName" type="text" formControlName="lastName" class="form-control" placeholder="Last name">
 
-  <label for="password">Password: </label>
-  <input id="password" type="password" formControlName="password" class="form-control">
-
-  <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
-    <div *ngIf="password.errors.required">
-      Password is required.
-    </div>
-    <div *ngIf="password.errors.pattern">
-      Password should contain minimum 6 characters, at least 1 letter and 1 number.
-    </div>
-  </div>
-
-
-  <label for="confirmPassword">Confirm password: </label>
-  <input id="confirmPassword" type="password" formControlName="confirmPassword" class="form-control">
-
-  <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="alert alert-danger">
-    <div *ngIf="confirmPassword.errors.required">
-      Confirm your password.
-    </div>
-  </div>
-
-  <div *ngIf="signUpForm.errors?.noPasswordConfirm && (confirmPassword.touched || confirmPassword.dirty)" class="alert alert-danger">
-    The value should be equal to password.
-  </div>
-
-
-  <label for="email">Email: </label>
-  <input id="email" type="text" formControlName="email" class="form-control">
-
-  <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
-    <div *ngIf="email.errors.required">
-      Email is required.
-    </div>
-    <div *ngIf="email.errors.pattern">
-      Inalid email.
+      <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger alert-validation">
+        <div *ngIf="lastName.errors.pattern">
+          Inalid last name.
+        </div>
+      </div>
     </div>
   </div>
 
 
-  <div>
-    <input id="user" type="radio" value="User" name="type" formControlName="type">
-    <label for="user">User</label>
-  </div>
-  <div>
-    <input id="admin" type="radio" value="Admin" name="type" formControlName="type">
-    <label for="admin">Admin</label>
+  <div class="form-group row">
+    <label for="password" class="col-sm-2 col-form-label">Password: </label>
+    <div class="col-sm-10">
+      <input id="password" type="password" formControlName="password" class="form-control" placeholder="Password">
+
+      <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger alert-validation">
+        <div *ngIf="password.errors.required">
+          Password is required.
+        </div>
+        <div *ngIf="password.errors.pattern">
+          Password should contain minimum 6 characters, at least 1 letter and 1 number.
+        </div>
+      </div>
+    </div>
   </div>
 
-  <button class="btn btn-primary" type="submit" [disabled]="!signUpForm.valid">Log in</button>
+  <div class="form-group row">
+    <label for="confirmPassword" class="col-sm-2 col-form-label">Confirm password: </label>
+    <div class="col-sm-10">
+      <input id="confirmPassword" type="password" formControlName="confirmPassword" class="form-control" placeholder="Confirm password">
+
+      <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="alert alert-danger alert-validation">
+        <div *ngIf="confirmPassword.errors.required">
+          Confirm your password.
+        </div>
+      </div>
+
+      <div *ngIf="signUpForm.errors?.noPasswordConfirm && (confirmPassword.touched || confirmPassword.dirty)" class="alert alert-danger alert-validation">
+        The value should be equal to password.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="email" class="col-sm-2 col-form-label">Email: </label>
+    <div class="col-sm-10">
+      <input id="email" type="email" formControlName="email" class="form-control" placeholder="Email">
+
+      <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger alert-validation">
+        <div *ngIf="email.errors.required">
+          Email is required.
+        </div>
+        <div *ngIf="email.errors.pattern">
+          Inalid email.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <fieldset class="form-group">
+    <div class="row">
+      <legend class="col-form-label col-sm-2 pt-0">User type</legend>
+      <div class="col-sm-10">
+        <div class="form-check">
+          <input class="form-check-input" id="user" type="radio" value="User" name="type" formControlName="type" checked>
+          <label class="form-check-label" for="user">User</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" id="admin" type="radio" value="Admin" name="type" formControlName="type">
+          <label class="form-check-label" for="admin">Admin</label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-group row">
+    <div class="col-sm-10 text-center">
+      <button class="btn btn-primary btn-lg" type="submit" [disabled]="!signUpForm.valid">Sign up</button>
+      <a routerLink="/LogIn/LogIn" routerLinkActive="active" class="btn btn-light btn-lg">Log in</a>
+    </div>
+  </div>
 
 </form>

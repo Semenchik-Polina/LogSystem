@@ -1,50 +1,64 @@
 <div class="container">
-  <h2>Actions</h2>
+  <h2 class="text-primary">Actions</h2>
 
   <form (ngSubmit)="filter()" #filterForm="ngForm">
-    <div class="form-group">
-      <label for="filterBy">Filter by</label>
-      <select class="form-control" id="filterBy" required name="filterBy"
-              [(ngModel)]="model.filterBy">
-        <option *ngFor="let filtBy of filterByOptions" [value]="filtBy">{{filtBy}}</option>
-      </select>
-    </div>
 
-    <div *ngIf="model.filterBy == 'UserName' ">
-      <div class="form-group">
-        <input type="text" class="form-control" id="userName"
-               name="userName" [(ngModel)]="model.userName" placeholder="username">
-      </div>
-    </div>
-
-    <div *ngIf="model.filterBy == 'Type' ">
-      <div class="form-group">
-        <select class="form-control" id="type" name="type" [(ngModel)]="model.type">
-          <option *ngFor="let type of typeOptions" [value]="typeOptions.indexOf(type)">
-            {{type}}
-          </option>
+    <div class="form-group row">
+      <label for="filterBy" class="col-sm-2 col-form-label">Filter by</label>
+      <div class="col-sm-10">
+        <select class="form-control" id="filterBy" required name="filterBy"
+                [(ngModel)]="model.filterBy">
+          <option *ngFor="let filtBy of filterByOptions" [value]="filtBy">{{filtBy}}</option>
         </select>
       </div>
     </div>
 
-    <div *ngIf="model.filterBy == 'Date' ">
-      <div class="form-group">
-        <div>Date picker</div>
-        <div date-picker>
-          <dp-date-picker class="form-control" id="date" name="date" placeholder="Date" returnedValueType="string"
-                          [(ngModel)]="model.date" [config]="datePickerConfig" theme="dp-material"></dp-date-picker>
-          <p>{{date}}</p>
+    <div *ngIf="model.filterBy == 'UserName' ">
+      <div class="form-group row">
+        <label for="userName" class="col-sm-2 col-form-label">User name: </label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="userName"
+                 name="userName" [(ngModel)]="model.userName" placeholder="User name">
         </div>
       </div>
     </div>
 
-    <button type="submit" [disabled]="!filterForm.form.valid" (click)="filter()">
-      <fa name="search" aria-hidden="true"></fa>
-    </button>
+    <div *ngIf="model.filterBy == 'Type' ">
+      <div class="form-group row">
+        <label for="type" class="col-sm-2 col-form-label">Type:</label>
+        <div class="col-sm-10">
+          <select class="form-control" id="type" name="type" [(ngModel)]="model.type">
+            <option *ngFor="let type of typeOptions" [value]="typeOptions.indexOf(type)">
+              {{type}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-    <button type="button" (click)="clearFilter()">
-      <fa name="filter" aria-hidden="true"></fa>
-    </button>
+    <div *ngIf="model.filterBy == 'Date' ">
+      <div class="form-group row">
+        <label for="date" class="col-sm-2 col-form-label">Date:</label>
+        <div class="col-sm-10">
+          <div date-picker>
+            <dp-date-picker class="form-control" id="date" name="date" placeholder="Date" returnedValueType="string"
+                            [(ngModel)]="model.date" [config]="datePickerConfig"></dp-date-picker>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-10 text-center">
+        <button class="btn btn-lg btn-primary" type="submit" [disabled]="!filterForm.form.valid" (click)="filter()">
+          <fa name="filter" aria-hidden="true"></fa>
+        </button>
+
+        <button class="btn btn-lg btn-primary" type="button" (click)="clearFilter()">
+          <fa name="times" aria-hidden="true"></fa>
+        </button>
+      </div>
+    </div>
 
   </form>
 
@@ -72,7 +86,7 @@
         </th>
       </tr>
     </thead>
-    <tbody>
+    <tbody *ngIf="filteredUserActions && filteredUserActions.length">
       <tr *ngFor="let userAction of filteredUserActions | sortBy: sortBy ">
         <td>{{userAction.UserName}}</td>
         <td>{{typeOptions[userAction.Type]}}</td>
@@ -80,5 +94,10 @@
       </tr>
     </tbody>
   </table>
+
+  <div class="alert alert-primary text-center" role="alert" *ngIf="!(filteredUserActions && filteredUserActions.length)">
+    No actions found.
+  </div>
+ 
 
 </div>
