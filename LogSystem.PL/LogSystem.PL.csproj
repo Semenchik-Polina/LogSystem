@@ -61,6 +61,9 @@
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.2.0.0\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject.Extensions.ChildKernel, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Extensions.ChildKernel.3.2.0.0\lib\net45-full\Ninject.Extensions.ChildKernel.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.Web.Common.3.2.0.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
     </Reference>
@@ -79,8 +82,13 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.112.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Cors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -106,8 +114,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http">
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
@@ -164,12 +170,12 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\api\LogInController.cs" />
+    <Compile Include="Controllers\api\LogOutController.cs" />
+    <Compile Include="Controllers\api\SignUpController.cs" />
+    <Compile Include="Controllers\api\UserController.cs" />
+    <Compile Include="Controllers\api\UserActionController.cs" />
     <Compile Include="Controllers\MainController.cs" />
-    <Compile Include="Controllers\LogInController.cs" />
-    <Compile Include="Controllers\SignUpController.cs" />
-    <Compile Include="Controllers\UserActionController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Filters\UserAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -189,16 +195,15 @@
     <Content Include="Angular\src\app\app.component.html" />
     <Content Include="Angular\src\app\edit-user-form\edit-user-form.component.html" />
     <Content Include="Angular\src\app\log-in-form\log-in-form.component.html" />
+    <Content Include="Angular\src\app\navbar\navbar.component.html" />
+    <Content Include="Angular\src\app\page-not-found\page-not-found.component.html" />
     <Content Include="Angular\src\app\sign-up-form\sign-up-form.component.html" />
     <Content Include="Angular\src\app\user-actions\user-actions.component.html" />
-    <Content Include="Angular\src\favicon.ico" />
     <Content Include="Angular\src\index.html" />
     <Content Include="Angular\src\karma.conf.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="Angular\e2e\tsconfig.e2e.json" />
-    <Content Include="Angular\src\app\app.component.scss" />
     <Content Include="Angular\src\assets\.gitkeep" />
     <Content Include="Angular\src\browserslist" />
     <Content Include="Angular\src\styles.scss" />
@@ -209,20 +214,7 @@
     <Content Include="Angular\package.json" />
     <Content Include="Angular\tsconfig.json" />
     <Content Include="Angular\tslint.json" />
-    <Content Include="Angular\src\app\edit-user-form\edit-user-form.component.scss" />
-    <Content Include="Angular\src\app\log-in-form\log-in-form.component.scss" />
-    <Content Include="Angular\src\app\sign-up-form\sign-up-form.component.scss" />
-    <Content Include="Angular\src\app\user-actions\user-actions.component.scss" />
-    <None Include="Scripts\jquery-3.3.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.3.1.js" />
-    <Content Include="Scripts\jquery-3.3.1.min.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Angular\src\app\navbar\navbar.component.scss" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -235,18 +227,14 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\LogIn\LogIn.cshtml" />
-    <Content Include="Views\SignUp\SignUp.cshtml" />
-    <Content Include="Views\User\Edit.cshtml" />
-    <Content Include="Views\UserAction\UserActionList.cshtml" />
+    <Content Include="Views\Main\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogSystem.BLL\LogSystem.BLL.csproj">
@@ -267,18 +255,22 @@
     <TypeScriptCompile Include="Angular\src\app\edit-user-form\edit-user-form.component.ts" />
     <TypeScriptCompile Include="Angular\src\app\log-in-form\log-in-form.component.ts" />
     <TypeScriptCompile Include="Angular\src\app\log-in-form\log-in-user.ts" />
-    <TypeScriptCompile Include="Angular\src\app\shared\user.ts" />
+    <TypeScriptCompile Include="Angular\src\app\navbar\navbar.component.ts" />
+    <TypeScriptCompile Include="Angular\src\app\page-not-found\page-not-found.component.ts" />
+    <TypeScriptCompile Include="Angular\src\app\shared\http-error.interceptor.ts" />
+    <TypeScriptCompile Include="Angular\src\app\shared\services\auth.service.ts" />
+    <TypeScriptCompile Include="Angular\src\app\shared\services\user-cookie.service.ts" />
+    <TypeScriptCompile Include="Angular\src\app\shared\models\user-cookie.ts" />
+    <TypeScriptCompile Include="Angular\src\app\shared\models\user.ts" />
     <TypeScriptCompile Include="Angular\src\app\sign-up-form\sign-up-form.component.ts" />
     <TypeScriptCompile Include="Angular\src\app\shared\confirm-password.directive.ts" />
     <TypeScriptCompile Include="Angular\src\app\sign-up-form\unique-user-name.directive.ts" />
-    <TypeScriptCompile Include="Angular\src\app\log-in-form\log-in.service.ts" />
-    <TypeScriptCompile Include="Angular\src\app\sign-up-form\sign-up.service.ts" />
-    <TypeScriptCompile Include="Angular\src\app\user-actions\filter-model.ts" />
+    <TypeScriptCompile Include="Angular\src\app\user-actions\models\filter-model.ts" />
     <TypeScriptCompile Include="Angular\src\app\user-actions\pipes\sort-by.pipe.ts" />
     <TypeScriptCompile Include="Angular\src\app\user-actions\user-actions.component.ts" />
     <TypeScriptCompile Include="Angular\src\app\user-actions\user-action.service.ts" />
-    <TypeScriptCompile Include="Angular\src\app\user-actions\user-action.ts" />
-    <TypeScriptCompile Include="Angular\src\app\user.service.ts" />
+    <TypeScriptCompile Include="Angular\src\app\user-actions\models\user-action.ts" />
+    <TypeScriptCompile Include="Angular\src\app\shared\services\user.service.ts" />
     <TypeScriptCompile Include="Angular\src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="Angular\src\environments\environment.ts" />
     <TypeScriptCompile Include="Angular\src\main.ts" />
