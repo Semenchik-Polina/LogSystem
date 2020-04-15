@@ -1,8 +1,9 @@
 ﻿using LogSystem.BLL.DTO.UserDTO;
 using LogSystem.Common.Enums;
 using System;
-using System.Text;
-using System.Web;
+using System.Net.Http.Headers;
+using System.Collections.Specialized;
+
 
 namespace LogSystem.BLL.Utils
 {
@@ -10,41 +11,40 @@ namespace LogSystem.BLL.Utils
     {
         public const string userCookieName = "User";
 
-        public static HttpCookie CreateAuthCookie(UserGetDetailDTO user)
-        {
-            HttpCookie cookie = new HttpCookie("Authorization");
-
-            string encoded = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(user.UserName + ":" + user.HashedPassword));
-            cookie.Value = "Basic " + encoded;
-
-            return cookie;
-        }
-
-        public static HttpCookie CreateUserCookie(UserGetDetailDTO user)
+        // create userCookie for UserGetDetailDTO
+        public static CookieHeaderValue CreateUserCookie(UserGetDetailDTO user)
         {
             var httpCookie = CreateCookie(user.UserID, user.Type);
             return httpCookie;
         }
 
-        private static HttpCookie CreateCookie(int userID, UserType type)
+        // create userCookie by UserID, UserType
+        private static CookieHeaderValue CreateCookie(int userID, UserType type)
         {
-            HttpCookie cookie = new HttpCookie(userCookieName);
-            cookie["UserID"] = userID.ToString();
-            cookie["UserType"] = type.ToString();
-            cookie.Expires = DateTime.Now.AddDays(1);
+            var vals = new NameValueCollection
+            {
+                ["UserID"] = userID.ToString(),
+                ["UserType"] = type.ToString()
+            };
+            var cookie = new CookieHeaderValue(userCookieName, vals)
+            {
+                Expires = DateTime.Now.AddDays(1),
+                Path = "/"
+            };
             return cookie;
         }
 
-        public static HttpCookie UpdateUserCookie(HttpCookie httpCookie, UserUpdateDTO user)
+        public static CookieHeaderValue UpdateUserCookie(CookieHeaderValue httpCookie, UserUpdateDTO user)
         {
             DeleteUserCookie(httpCookie);
             var cookie = CreateCookie(user.UserID, user.Type);
             return cookie;
         }
 
-        public static void DeleteUserCookie(HttpCookie httpCookie)
+        public static void DeleteUserCookie(CookieHeaderValue httpCookie)
         {
             httpCookie.Expires = DateTime.Now.AddDays(-1);
         }
+
     }
 }
