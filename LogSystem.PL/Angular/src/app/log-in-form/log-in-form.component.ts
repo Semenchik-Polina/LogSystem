@@ -1,60 +1,69 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { LogInService } from './log-in.service';
-import { log } from 'util';
 import { Router, NavigationEnd } from '@angular/router';
+
+import { AuthService } from '../shared/services/auth.service';
+import { UserCookieService } from '../shared/services/user-cookie.service';
 
 @Component({
   selector: 'log-in-form',
-  templateUrl: './log-in-form.component.html',
-  styleUrls: ['./log-in-form.component.scss']
+  templateUrl: './log-in-form.component.html'
 })
 export class LogInFormComponent implements OnInit, OnDestroy {
 
-  loginForm: FormGroup;
-  navigationSubscription;
+  private loginForm: FormGroup;
+  private navigationSubscription;
 
-  constructor(private logInService: LogInService, private router: Router) {
+  constructor( private userCookieService: UserCookieService, private authService: AuthService, private router: Router) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
-      // If it is a NavigationEnd event re-initalise the component
+      // if it's a NavigationEnd event re-initalise the component
       if (e instanceof NavigationEnd) {
         this.ngOnInit();
       }
     });
+    this.checkAuthentication()
   }
 
+  // init form
   ngOnInit(): void {
     this.loginForm = new FormGroup({
       'userName': new FormControl('', Validators.required),
       'password': new FormControl('', Validators.required)
     })
   }
-  
+
   get userName() { return this.loginForm.get('userName'); }
   get password() { return this.loginForm.get('password'); }
 
+
   onSubmit() {
-    this.logInService.logIn(this.loginForm.value)
-      .subscribe((user) => {
-        user ? this.gotoUserEdit(user.UserID) : this.router.navigate([]);
+    this.authService.logIn(this.loginForm.value)
+      .subscribe((userID) => {
+        userID ? this.router.navigate([`/Users/${userID}`]) : this.router.navigate([]);
       });
-    //location.reload();
   }
 
-  gotoUserEdit(id: number) {
-    //this.router.navigate([`/User/Edit/${id}`]);
-    //this.router.navigate(['/Main/GetUserProfile']);
-    log("reload is coming");
-    location.assign('/Main/GetUserProfile');
+
+  // navigate to user-edit-form if user is already autheticated
+  checkAuthentication() {
+    console.log("checkAuth logIn");
+    this.authService.getIsAuthenticated()
+      .subscribe((isAuth: boolean) => {
+        if (isAuth) {
+          console.log("Auth is true logIn");
+          const cookie = this.userCookieService.getCookieValue();
+          if (cookie && cookie.UserID) {
+            console.log("Navigate to user logIn");
+            this.router.navigate([`/Users/${cookie.UserID}`]);
+          }
+        }
+      })
   }
 
   ngOnDestroy() {
-    // avoid memory leaks here by cleaning up after ourselves. If we  
-    // don't then we will continue to run our initialiseInvites()   
-    // method on every navigationEnd event.
+    // avoid memory leaks by cleaning the subscription up.
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();
     }
   }
-
 }

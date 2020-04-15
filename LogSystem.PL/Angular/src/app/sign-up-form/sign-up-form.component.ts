@@ -1,27 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { confirmPasswordValidator } from '../shared/confirm-password.directive';
-import { SignUpService } from './sign-up.service';
-import { uniqueUserNameValidator } from './unique-user-name.directive';
 import { Router } from '@angular/router';
+
+import { confirmPasswordValidator } from '../shared/confirm-password.directive';
+import { uniqueUserNameValidator } from './unique-user-name.directive';
+import { UserService } from '../shared/services/user.service';
+import { AuthService } from '../shared/services/auth.service';
 
 
 @Component({
   selector: 'sign-up-form',
   templateUrl: './sign-up-form.component.html',
-  styleUrls: ['./sign-up-form.component.scss']
 })
 export class SignUpFormComponent implements OnInit {
 
   signUpForm: FormGroup;
 
   constructor(
-    private signUpService: SignUpService,
+    private userService: UserService,
+    private authService: AuthService,
     private router: Router) { }
 
   ngOnInit(): void {
     this.signUpForm = new FormGroup({
-      'userName': new FormControl('', Validators.required, uniqueUserNameValidator(this.signUpService)),
+      'userName': new FormControl('', Validators.required, uniqueUserNameValidator(this.userService)),
       'firstName': new FormControl('', Validators.pattern("^[A-Za-z,.'-]+$")),
       'lastName': new FormControl('', Validators.pattern("^[A-Za-z,.'-]+$")),
       'password': new FormControl('', [Validators.required, Validators.pattern("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")]),
@@ -40,9 +42,12 @@ export class SignUpFormComponent implements OnInit {
   get type() { return this.signUpForm.get('type'); }
 
   onSubmit() {
-    this.signUpService.signUp(this.signUpForm.value)
+    this.authService.signUp(this.signUpForm.value)
       .subscribe((newUserId) => {
-        newUserId ? this.router.navigate(['/LogIn/LogIn']) : this.router.navigate([]);
+        newUserId ? this.router.navigate(['/LogIn']) : this.router.navigate([]);
       });
   }
+
+
+
 }
