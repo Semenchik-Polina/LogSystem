@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using LogSystem.Common.Enums;
 using LogSystem.DAL.Entities;
 using LogSystem.DAL.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
@@ -14,17 +16,21 @@ namespace LogSystem.DAL.Repositories
         public UserRepository()
             :base()
         { }
-
         
-        //public async Task<IEnumerable<User>> GetAll()
-        //{
-        //    var result = await Connection.QueryAsync<User>(
-        //        "SELECT * FROM User",
-        //        transaction: Transaction
-        //        );
-        //    return result;   
-        //}
+        // get all users filtered by UserType
+        public async Task<IEnumerable<User>> GetAllByUserType(UserType type)
+        {
+            using (IDbConnection Connection = new SQLiteConnection(connectionString))
+            {
+                var result = await Connection.QueryAsync<User>(
+                "SELECT * FROM USER WHERE Type = @type",
+                param: new { type = (int)type }
+            );
+                return result;
+            }
+        }
 
+        // get user by id
         public async Task<User> GetById(int id)
         {
             using (IDbConnection connection = new SQLiteConnection(connectionString))
@@ -32,13 +38,13 @@ namespace LogSystem.DAL.Repositories
                 var user = await connection.QueryAsync<User>(
                     "SELECT * FROM USER WHERE UserID = @userID",
                     param: new { userID = id }
-                    //transaction: Transaction
                 );
                 var result = user.FirstOrDefault();
                 return result;
             }
         }
 
+        // get first ot default user by username
         public async Task<User> GetByUserName(string username)
         {
             using (IDbConnection Connection = new SQLiteConnection(connectionString))
@@ -46,12 +52,11 @@ namespace LogSystem.DAL.Repositories
                 var result = await Connection.QueryAsync<User>(
                 "SELECT * FROM USER WHERE UserName = @username",
                 param: new { username }
-                //transaction: Transaction
             );
                 return result.FirstOrDefault();
             }
         }
-
+        
         public async Task<int> Insert(User entity)
         {
             if (entity == null)
@@ -70,12 +75,11 @@ namespace LogSystem.DAL.Repositories
                     lastName = entity.LastName,
                     email = entity.Email,
                     hashedPassword = entity.HashedPassword,
-                    type = (int) entity.Type,
+                    type = (int)entity.Type,
                     username = entity.UserName,
                     dynamicSalt = entity.DynamicSalt,
                     registrationDate = entity.RegistrationDate
                 }
-                //transaction: Transaction
             );
             }
             return entity.UserID;
@@ -102,7 +106,6 @@ namespace LogSystem.DAL.Repositories
                     type = (int) entity.Type,
                     id = entity.UserID
                 }
-                //transaction: Transaction
             );
             }
         }

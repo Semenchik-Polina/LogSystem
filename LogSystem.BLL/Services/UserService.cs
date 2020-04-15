@@ -26,6 +26,21 @@ namespace LogSystem.BLL.Services
             HashHelper = new HashHelper(StaticSalt.Salt);
         }
 
+
+        public async Task<UserGetDetailDTO> GetUserByID(int id)
+        {
+            User userEntity = await UserRepository.GetById(id);
+            var userGetDetailDTO = AMapper.Mapper.Map<User, UserGetDetailDTO>(userEntity);
+            return userGetDetailDTO;
+        }
+
+        public async Task<UserGetDetailDTO> GetUserByUserName(string username)
+        {
+            User userEntity = await UserRepository.GetByUserName(username);
+            var userGetDetailDTO = AMapper.Mapper.Map<User, UserGetDetailDTO>(userEntity);
+            return userGetDetailDTO;
+        }
+
         /// <summary>
         /// get UserLoginDTO by username and password
         /// </summary>
@@ -37,16 +52,9 @@ namespace LogSystem.BLL.Services
             // find users by UserName
             // delete after making ValidationService
             User userEntity = await UserRepository.GetByUserName(userLogInDTO.UserName);
-            
-            //if (userEntity != null && IsRightPassword(userLogInDTO.Password, userEntity.HashedPassword, userEntity.DynamicSalt))
-            //{          
+                    
             var  userGetDetailDTO = AMapper.Mapper.Map<User, UserGetDetailDTO>(userEntity);
-            //}
-            //else
-            //{
-            //    userGetDetailDTO = null;
-            //}
-
+            
             // add record about signing in the user
             var userAction = new UserActionCreateDTO(userGetDetailDTO.UserID, UserActionType.LogIn);
             await UserActionService.InsertUserActionToDB(userAction);
@@ -72,7 +80,6 @@ namespace LogSystem.BLL.Services
             await UserActionService.InsertUserActionToDB(userAction);
 
             return newUserID;
-            //    Database.Commit();
         }
 
         public async Task UpdateUser(UserUpdateDTO user)
@@ -82,7 +89,7 @@ namespace LogSystem.BLL.Services
 
             var outdatedUser = await UserRepository.GetById(user.UserID);
             
-            if (user.Password == null)
+            if (user.Password == null || user.Password.Length < 1)
             {
                 userEntity.HashedPassword = outdatedUser.HashedPassword;
             }
@@ -98,36 +105,13 @@ namespace LogSystem.BLL.Services
             // add record about editing of the user
             var userAction = new UserActionCreateDTO(userEntity.UserID, UserActionType.Edit);
             await UserActionService.InsertUserActionToDB(userAction);
-
-
-            //Database.Commit();
         }
 
         public async Task LogOut(int userID)
         {
             var userAction = new UserActionCreateDTO(userID, UserActionType.LogOut);
             await UserActionService.InsertUserActionToDB(userAction);
-
         }
 
-        public async Task<UserGetDetailDTO> GetUserByID(int id)
-        {
-            User userEntity = await UserRepository.GetById(id);
-            var userGetDetailDTO = AMapper.Mapper.Map<User, UserGetDetailDTO>(userEntity);
-            return userGetDetailDTO;
-        }
-
-        public async Task<UserGetDetailDTO> GetUserByUserName(string username)
-        {
-            User userEntity = await UserRepository.GetByUserName(username);
-            var userGetDetailDTO = AMapper.Mapper.Map<User, UserGetDetailDTO>(userEntity);
-            return userGetDetailDTO;
-        }
-
-
-        //public void Dispose()
-        //{
-        //    Database.Dispose();
-        //}
     }
 }
