@@ -4,15 +4,16 @@ using LogSystem.BLL.Utils;
 using LogSystem.Common.Helpers;
 using LogSystem.PL.Models.UserViewModels;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Web.Mvc;
-using System.Web.Script.Serialization;
+using System.Web.Http;
 using System.Web.Security;
 
-namespace LogSystem.PL.Controllers
+namespace LogSystem.PL.Controllers.api
 {
     [AllowAnonymous]
-    public class LogInController : Controller
+    public class LogInController : ApiController
     {
         private IUserService UserService { get; set; }
         private IValidationService ValidationService { get; set; }
@@ -26,39 +27,34 @@ namespace LogSystem.PL.Controllers
             AMapper = new Utils.AMapper();
             ErrorHelper = new ErrorHelper();
         }
-
-        // GET: Default     
-        [HttpGet]
-        public ActionResult LogIn()
-        {
-            return View();
-        }
-
+        
+        // POST: api/LogIn
         [HttpPost]
-        public async Task<ActionResult> LogIn(AuthorizationViewModel authVM)
+        public async Task<HttpResponseMessage> PostAsync([FromBody]AuthorizationViewModel authVM)
         {
+            // check if the logIn user exists
             var error = await ValidationService.ValidateLogInUser(authVM.UserName, authVM.Password);
-
             if (error != null)
             {
                 ModelState.AddModelError("Username", error.description);
             }
-
             if (!ModelState.IsValid)
             {
-                return Json(null, JsonRequestBehavior.AllowGet);
-                //return View("Get");
+                // if there is no user with authVM parameters return empty result  
+                return Request.CreateResponse(HttpStatusCode.OK);
             }
 
+            // logging in
             UserLogInDTO userLogInDTO = AMapper.Mapper.Map<AuthorizationViewModel, UserLogInDTO>(authVM);
             UserGetDetailDTO userGetDTO = await UserService.LogIn(userLogInDTO);
-
+                    
+            // set auth and userCookie
             FormsAuthentication.SetAuthCookie(userGetDTO.UserName, true);
-            Response.Cookies.Add(UserCookieHelper.CreateUserCookie(userGetDTO));
-
-            return Json(userGetDTO, JsonRequestBehavior.AllowGet);
-
-            //return RedirectToAction("Edit", "User", new { id = userGetDTO.UserID});
+            var response = Request.CreateResponse<int>(HttpStatusCode.OK, userGetDTO.UserID);
+            var cookie = UserCookieHelper.CreateUserCookie(userGetDTO);
+            response.Headers.AddCookies(new CookieHeaderValue[] { cookie });
+                        
+            return response;
         }
 
     }

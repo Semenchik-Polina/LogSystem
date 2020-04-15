@@ -10,9 +10,9 @@ namespace LogSystem.PL
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Main", action = "GetUserProfile", id = UrlParameter.Optional }
+                name: "CatchAll", 
+                url: "{*path}", 
+                defaults: new { controller = "Main", action = "Index"}
             );
         }
     }
