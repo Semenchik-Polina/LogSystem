@@ -1,27 +1,15 @@
-import { Directive, forwardRef, Injectable } from '@angular/core';
-import { AsyncValidator, AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors, ValidatorFn, FormControl } from '@angular/forms';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { SignUpService } from './sign-up.service';
-import { timer, Observable, of } from 'rxjs';
+import { Directive } from '@angular/core';
+import { AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors, FormControl } from '@angular/forms';
+import { map, switchMap } from 'rxjs/operators';
+import { timer } from 'rxjs';
 
-//@Injectable({ providedIn: 'root' })
-//export class UniqueUserNameValidator implements AsyncValidator {
-//  constructor(private signUpService: SignUpService) { }
+import { UserService } from '../shared/services/user.service';
 
-//  validate(
-//    ctrl: AbstractControl
-//  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-//    return this.signUpService.isUserNameTaken(ctrl.value).pipe(
-//      map(isTaken => (isTaken ? { uniqueUserName: true } : null)),
-//      catchError(() => of(null))
-//    );
-//  }
-//}
-
-export const uniqueUserNameValidator = (signUpService: SignUpService, time: number = 500) => {
+// after 0.5 sec check if this username is already taken
+export const uniqueUserNameValidator = (userService: UserService, time: number = 500) => {
   return (input: FormControl) => {
     return timer(time).pipe(
-      switchMap(() => signUpService.isUserNameTaken(input.value)),
+      switchMap(() => userService.getUserByUserName(input.value)),
       map(res => {
         return res ? { userNameIsTaken: true } : null
       })

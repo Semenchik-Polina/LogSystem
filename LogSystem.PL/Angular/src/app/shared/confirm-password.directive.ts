@@ -1,6 +1,7 @@
 import { Directive } from '@angular/core';
 import { AbstractControl, FormGroup, ValidationErrors, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 
+// check if password and confirmPassword field's values are equal
 export const confirmPasswordValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
   const password = control.get('password');
   const confirmPassword = control.get('confirmPassword');

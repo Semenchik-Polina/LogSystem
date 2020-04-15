@@ -1,45 +1,44 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+
+import { User } from '../shared/models/user';
 import { confirmPasswordValidator } from '../shared/confirm-password.directive';
-import { UserService } from '../user.service';
-import { User } from '../shared/user';
-import { log } from 'util';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { DISABLED } from '@angular/forms/src/model';
+import { UserService } from '../shared/services/user.service';
+
 
 @Component({
   selector: 'edit-user-form',
   templateUrl: './edit-user-form.component.html',
-  styleUrls: ['./edit-user-form.component.scss'],
   providers: [UserService]
 })
 export class EditUserFormComponent implements OnInit {
 
-  id: number;
+  private id: number;
+  private typeList = ["User", "Admin"];
   private user: User;
   private editUserForm: FormGroup;
-   typeList = ["User", "Admin"];
   private routeSubscription: Subscription;
 
-  constructor(
-    private _userService: UserService,
-    private route: ActivatedRoute,
+  constructor( private userService: UserService, private route: ActivatedRoute,
     private router: Router) {
 
-    this.routeSubscription = route.params.subscribe(params => this.id = params['id']);
+    // get id from request parameters
+    this.routeSubscription = route.params.subscribe(
+      params => this.id = params['id']);
   }
 
   ngOnInit(): void {
     if (!this.id) {
-      this.router.navigate(['/LogIn/LogIn']);
+      this.router.navigate(['']);
     }
-    this._userService.getUser(this.id)
+    // if id is defined get user by id
+    this.userService.getUserByID(this.id)
       .subscribe((user: User) => {
         this.user = user;
-        this.user.RegistrationDate = new Date(parseInt(this.user.RegistrationDate.toString().substr(6)));
         this.initForm();
-      });    
+      }); 
   }
 
   get userID() { return this.editUserForm.get('userID'); }
@@ -66,12 +65,13 @@ export class EditUserFormComponent implements OnInit {
     }, confirmPasswordValidator);
   }
 
+  // on "save" button update the profile 
   onSubmit() {
-    log(this.editUserForm.value);
-    this._userService.updateUser(this.editUserForm.value)
+    this.userService.updateUser(this.id, this.editUserForm.value)
       .subscribe((userId) => {
-        userId ? location.reload() : this.router.navigate([]);
+        this.router.navigate([]);
       });
   }
+
 
 }

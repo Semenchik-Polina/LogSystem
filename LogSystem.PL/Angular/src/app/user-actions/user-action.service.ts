@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { UserAction } from './user-action';
-import { log } from 'util';
 
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-  })
-};
+import { UserAction } from './models/user-action';
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +11,14 @@ const httpOptions = {
 
 export class UserActionService {
 
-  private baseUrl = "api/UserAction1";
+  private baseUrl = "api/UserActions";
 
   constructor( private http: HttpClient ) { }
 
+  // get all user actions
+  // return array of UserAction
   getUserActions(): Observable<UserAction[]> {
-    //const getUrl = `${this.baseUrl}Get`;
-    return this.http.get<UserAction[]>(this.baseUrl, httpOptions);
+    return this.http.get<UserAction[]>(this.baseUrl);
   }
 
 }

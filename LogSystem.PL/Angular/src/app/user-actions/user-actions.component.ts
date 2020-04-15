@@ -1,25 +1,25 @@
-import { Component, NgModule, OnInit, OnDestroy  } from '@angular/core';
+import { Component, OnInit, OnDestroy  } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { UserAction } from './user-action';
+import { FilterModel } from './models/filter-model';
+
+import { UserAction } from './models/user-action';
 import { UserActionService } from './user-action.service';
-import { FilterModel } from './filter-model';
-import { log } from 'util';
 
 @Component({
   selector: 'user-actions',
   templateUrl: './user-actions.component.html',
-  styleUrls: ['./user-actions.component.scss'],
   providers: [UserActionService],
 })
 export class UserActionsComponent implements OnInit, OnDestroy {
 
-  navigationSubscription;
-  userActions: UserAction[];
-  filteredUserActions: UserAction[];
-  filterByOptions = ['UserName', 'Type', 'Date'];
-  typeOptions = ['Log in', 'Log out', 'Sign up', 'Update'];
-  sortBy = "UserName";
-  model = new FilterModel( 'UserName' );
+  private navigationSubscription;
+  private userActions: UserAction[];
+  private filteredUserActions: UserAction[];
+
+  private filterByOptions = ['UserName', 'Type', 'Date'];
+  private typeOptions = ['Log in', 'Log out', 'Sign up', 'Update'];
+  private sortBy = "UserName";
+  private model = new FilterModel( 'UserName' );
 
   constructor(private userActionService: UserActionService, private router: Router) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
@@ -34,18 +34,8 @@ export class UserActionsComponent implements OnInit, OnDestroy {
     this.userActionService.getUserActions()
       .subscribe((actions: UserAction[]) => {
         this.userActions = actions;
-        this.userActions.forEach(action =>
-          action.Date = new Date(parseInt(action.Date.toString().substr(6))));
         this.filteredUserActions = this.userActions;
       });
-  }
-
-  getUserActions(): void {
-    this.userActions = [
-      { UserActionID: 1, Type: 0, UserName: "Cleo", Date: new Date('December 17, 1995 03:24:00') },
-      { UserActionID: 2, Type: 1, UserName: "Kate", Date: new Date('December 20, 2005 03:24:00') },
-      { UserActionID: 3, Type: 0, UserName: "Amy", Date: new Date('December 20, 2015 03:24:00') }
-    ]
   }
 
   filter() {
@@ -66,39 +56,30 @@ export class UserActionsComponent implements OnInit, OnDestroy {
         break;
       }
       default: {
-        this.reload();
         break;
       }
     }
-    log(`model: ${JSON.stringify(this.model)}`);
-    log(`filteredUserActions: ${JSON.stringify(this.filteredUserActions)}`);
-    log(`userActions: ${JSON.stringify(this.userActions)}`);
   }
 
   clearFilter() {
     this.filteredUserActions = this.userActions;
   }
 
-  // onClick button ??
-  reload() {
-
-  }
-
-  filterByType(type: number): void {
+  private filterByType(type: number): void {
     if (!!type) {
       this.filteredUserActions = this.userActions.filter(userAction =>
         userAction.Type == type);
     }
   }
 
-  filterByUserName(userName: string): void {
+  private filterByUserName(userName: string): void {
     if (!!userName) {
       this.filteredUserActions = this.userActions.filter(userActions =>
         userActions.UserName.toLowerCase().includes(userName.toLowerCase()));
     }
   }
 
-  filterByDate(moment: Date): void {
+  private filterByDate(moment: Date): void {
     if (!!moment) {
       var date = new Date(moment);
       this.filteredUserActions = this.userActions.filter(userAction =>
@@ -106,18 +87,16 @@ export class UserActionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  datesAreOnSameDay(first: Date, second: Date): boolean {
-    log(`first: ${first}`);
-    log(`second: ${second}`);
+  // check if two dates are on the same date
+  // return boolean
+  private datesAreOnSameDay(first: Date, second: Date): boolean {
     return first.getFullYear() === second.getFullYear() &&
       first.getMonth() === second.getMonth() &&
       first.getDate() === second.getDate();
   }
 
   ngOnDestroy() {
-    // avoid memory leaks here by cleaning up after ourselves. If we  
-    // don't then we will continue to run our initialiseInvites()   
-    // method on every navigationEnd event.
+    // avoid memory leaks here by cleaning the navigation subscription up 
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();
     }
