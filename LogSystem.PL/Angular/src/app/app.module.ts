@@ -17,12 +17,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { NavbarComponent } from './navbar/navbar.component';
 
 import { ConfirmPasswordDirective } from './shared/confirm-password.directive';
-//import { UniqueUserNameValidator } from './sign-up-form/unique-user-name.directive';
-
 import { UserService } from './shared/services/user.service';
 import { UserActionService } from './user-actions/user-action.service';
 import { SortByPipe } from './user-actions/pipes/sort-by.pipe';
-//import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { HttpErrorInterceptor } from './shared/http-error.interceptor';
 
 
@@ -47,8 +44,6 @@ export const appRoutes: Routes = [
     SortByPipe,
     PageNotFoundComponent,
     NavbarComponent,
-    //ErrorDialogComponent,
-    //UniqueUserNameValidator
   ],
   imports: [
     BrowserModule,

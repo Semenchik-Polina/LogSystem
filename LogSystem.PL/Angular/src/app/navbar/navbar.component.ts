@@ -11,6 +11,7 @@ import { Router, NavigationStart } from '@angular/router';
 })
 export class NavbarComponent implements OnDestroy {
 
+  navbarOpen = false;
   private navigationSubscription;
   private isAuthenticated: boolean;
   private cookieValue: UserCookie;
@@ -27,11 +28,14 @@ export class NavbarComponent implements OnDestroy {
     });
   }
 
+  toggleNavbar() {
+    this.navbarOpen = !this.navbarOpen;
+  }
+
   logOut() {
     this.authService.logOut()
       .subscribe(() => {
         this.updateIsAuthenticated();
-        console.log(this.isAuthenticated);
         this.router.navigate(['/LogIn']);
       });
   }

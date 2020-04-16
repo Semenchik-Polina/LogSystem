@@ -13,6 +13,7 @@ export class LogInFormComponent implements OnInit, OnDestroy {
 
   private loginForm: FormGroup;
   private navigationSubscription;
+  private isAuthErrorOccured: boolean;
 
   constructor( private userCookieService: UserCookieService, private authService: AuthService, private router: Router) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
@@ -22,6 +23,7 @@ export class LogInFormComponent implements OnInit, OnDestroy {
       }
     });
     this.checkAuthentication()
+    this.isAuthErrorOccured = false;
   }
 
   // init form
@@ -39,21 +41,24 @@ export class LogInFormComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.authService.logIn(this.loginForm.value)
       .subscribe((userID) => {
-        userID ? this.router.navigate([`/Users/${userID}`]) : this.router.navigate([]);
+        if (userID) {
+          this.isAuthErrorOccured = false;
+          this.router.navigate([`/Users/${userID}`]);
+        } else {
+          this.isAuthErrorOccured = true;
+          this.router.navigate([]);
+        }
       });
   }
 
 
   // navigate to user-edit-form if user is already autheticated
   checkAuthentication() {
-    console.log("checkAuth logIn");
     this.authService.getIsAuthenticated()
       .subscribe((isAuth: boolean) => {
         if (isAuth) {
-          console.log("Auth is true logIn");
           const cookie = this.userCookieService.getCookieValue();
           if (cookie && cookie.UserID) {
-            console.log("Navigate to user logIn");
             this.router.navigate([`/Users/${cookie.UserID}`]);
           }
         }
