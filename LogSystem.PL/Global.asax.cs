@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using LogSystem.BLL.Utils.MailHelpers;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -16,6 +17,8 @@ namespace LogSystem.PL
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            MailScheduler.Start();
         }
 
         protected void Application_PostAuthorizeRequest()

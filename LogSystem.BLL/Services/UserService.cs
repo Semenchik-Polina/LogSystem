@@ -8,6 +8,8 @@ using LogSystem.DAL.Interfaces;
 using LogSystem.DAL.Repositories;
 using LogSystem.Common.Enums;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace LogSystem.BLL.Services
 {
@@ -26,6 +28,12 @@ namespace LogSystem.BLL.Services
             HashHelper = new HashHelper(StaticSalt.Salt);
         }
 
+        public async Task<IEnumerable<UserGetDetailDTO>> GetAllUsersByType(UserType type)
+        {
+            IEnumerable<User> userEntities = await UserRepository.GetAllByUserType(type);
+            var userGetDetailDTOs = AMapper.Mapper.Map< IEnumerable<User>, IEnumerable<UserGetDetailDTO>>(userEntities);
+            return userGetDetailDTOs;
+        }
 
         public async Task<UserGetDetailDTO> GetUserByID(int id)
         {

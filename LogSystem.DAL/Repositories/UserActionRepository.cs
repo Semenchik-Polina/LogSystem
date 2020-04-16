@@ -36,7 +36,7 @@ namespace LogSystem.DAL.Repositories
             }
         }
 
-        // get all userActions filtered by date
+        // get all userActions filtered by date ("yyyy-MM-dd")
         // store date as string because SQLite doesn't have DateTime type
         public async Task<IEnumerable<UserAction>> GetByDate(string date)
         {
@@ -46,7 +46,7 @@ namespace LogSystem.DAL.Repositories
                 "SELECT * FROM UserAction ua " +
                 "LEFT JOIN User u " +
                 "ON ua.FK_UserID = u.UserID " +
-                "WHERE ua.Date = @date",
+                "WHERE (SELECT substr(ua.Date,1,10)) = @date",
                  (userAction, user) =>
                  {
                      userAction.User = user;

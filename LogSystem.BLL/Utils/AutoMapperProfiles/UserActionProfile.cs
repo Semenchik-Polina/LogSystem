@@ -18,6 +18,9 @@ namespace LogSystem.BLL.Utils.AutoMapperProfiles
 
             CreateMap<UserActionCreateDTO, UserAction>()
                 .ForMember("Date", opt => opt.MapFrom(c => c.Date.ToString(dateTimeFormat)));
+
+            CreateMap<UserActionGetDetailDTO, UserActionReportDTO>()
+                .ForMember("UserName", opt => opt.MapFrom(c => c.User.UserName));
         }
     }
 }
